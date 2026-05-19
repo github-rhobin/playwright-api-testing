@@ -24,7 +24,7 @@ export class BookingClient {
 
     // Response Status Checker
     if (!response.ok()) {
-      throw new Error(`Create Booking [POST] API failed. Status: ${response.status()} : ${response.statusText()}`);
+      throw new Error(`Create Booking [POST] API failed.\nStatus: ${response.status()} : ${response.statusText()}`);
     }
 
     return getResponseDetails<T>('POST', response, duration);
@@ -39,7 +39,7 @@ export class BookingClient {
 
     // Response Status Checker
     if (!response.ok()) {
-      throw new Error(`Get Booking [GET] API failed. Status: ${response.status()} : ${response.statusText()}`);
+      throw new Error(`Get Booking [GET] API failed.\nStatus: ${response.status()} ${response.statusText()}`);
     }
 
     return getResponseDetails<T>('GET', response, duration);
@@ -68,7 +68,7 @@ export class BookingClient {
 
     // Response Status Checker
     if (!response.ok()) {
-      throw new Error(`Get Booking IDs [GET] API failed. Status: ${response.status()} : ${response.statusText()}`);
+      throw new Error(`Get Booking IDs [GET] API failed.\nStatus: ${response.status()} ${response.statusText()}`);
     }
 
     return getResponseDetails<T>('GET', response, duration);
@@ -91,17 +91,13 @@ export class BookingClient {
     });
     const duration = Date.now() - startTime; // Calculate duration in ms
 
-    // Response Status Checker
-    if (!response.ok()) {
-      throw new Error(`Update Booking [PUT] API failed. Status: ${response.status()} : ${response.statusText()}`);
-    }
-
     return getResponseDetails<T>('PUT', response, duration);
   }
 
   async partialUpdateBookingApi<T>(bookingId: number, payload: partialUpdateBookingRequest, overrideToken?: string) {
     // Resolve which token to use (method parameter override > stored fixture token > undefined)
     const activeToken = overrideToken !== undefined ? overrideToken : this.authToken;
+
     const startTime = Date.now(); // Start timer
     const response = await this.request.patch(`/booking/${bookingId}`, {
       // Inject the authToken (Bearer/Cookie) in the request headers
@@ -114,13 +110,6 @@ export class BookingClient {
       timeout: 2_000, // allotted response time 2s
     });
     const duration = Date.now() - startTime; // Calculate duration in ms
-
-    // Response Status Checker
-    if (!response.ok()) {
-      throw new Error(
-        `Partial Update Booking [PATCH] API failed. Status: ${response.status()} : ${response.statusText()}`
-      );
-    }
 
     return getResponseDetails<T>('PATCH', response, duration);
   }

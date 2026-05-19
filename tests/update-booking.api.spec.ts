@@ -8,7 +8,7 @@ import {
 import { stringifyJson } from '../src/utils/api-util';
 import { z } from 'zod';
 
-test('[PATCH] Partial Update Booking Details', async ({ bookingClient }, testInfo) => {
+test('[PUT] Update Booking Details - Valid Token', { tag: ['@positive'] }, async ({ bookingClient }, testInfo) => {
   /**
    * Since restful-booking heroku app auto clears bookings
    * we need to create booking first then vefiry the details.
@@ -73,17 +73,71 @@ test('[PATCH] Partial Update Booking Details', async ({ bookingClient }, testInf
     // Bulk Property Validation using .toMatchObject()
     expect(putResponseDetails.body, 'Should match the following details').toMatchObject(putRequestPayload);
   });
-
-  /**
-   * ASSERTION SUMMARY REFERENCE
-   * ----------------------------------------------------------------------------------------------------------------------------------------------------
-   * | Assertion                | Best Used For                        | Comparison Type                                                                |
-   * |--------------------------|--------------------------------------|--------------------------------------------------------------------------------|
-   * | .toBe()                  | Status codes, booleans, exact strings| Identity/Strict (===) - Checks if they are the exact same instance in memory.  |
-   * | .toEqual()               | Full JSON objects or Arrays          | Deep Equality -  Recursively checks if all fields and values inside match.     |
-   * | .toMatchObject()         | Checking specific fields in a JSON   | Partial Match                                                                  |
-   * | .toBeOK()                | Quick 200-299 status check           | Range check                                                                    |
-   * | expect.objectContaining()| Partial matches inside Arrays/Objects| Asymmetric Matcher                                                             |
-   * ----------------------------------------------------------------------------------------------------------------------------------------------------
-   */
 });
+
+test('[PUT] Update Booking Details - Invalid/No Token', { tag: ['@negative'] }, async ({ bookingClient }, testInfo) => {
+  /**
+   * Since restful-booking heroku app auto clears bookings
+   * we need to create booking first then vefiry the details.
+   * We will reuse the POST request first then save the generated Booking ID
+   * Then run the PATCH request targetting the saved Booking ID
+   */
+
+  //Instantiate the Client
+  //Using the bookingClient fixture (which has authToken)
+
+  //Generate the randomized data (payload)
+  const postRequestPayload = await generateBookingApiPayload();
+
+  //Call the client POST method
+  const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
+
+  // Attach the stringified JSON to the current step in the report
+  await testInfo.attach('POST API RESPONSE', {
+    body: stringifyJson(postResponseDetails),
+    contentType: 'application/json',
+  });
+
+  // Save the bookingid from the response
+  const bookingId = postResponseDetails.body.bookingid;
+
+  //Generate the randomized update data (payload)
+  const putRequestPayload = await generateBookingApiPayload();
+
+  // Attach the stringified JSON to the current step in the report
+  await testInfo.attach('PUT API REQUEST', {
+    body: stringifyJson(putRequestPayload),
+    contentType: 'application/json',
+  });
+
+  //Call the client PUT method
+  const putResponseDetails = await bookingClient.updateBookingApi<updateBookingResponse>(
+    bookingId,
+    putRequestPayload,
+    '' // No Auth Token. Will result to Error 403 Forbidden
+  );
+
+  await test.step('Validation', async () => {
+    // Flexible check for any success code (200-299)
+    expect(putResponseDetails.isResponseSuccessful, 'Should be a Failed Response').toBe(false);
+
+    // Strict check for a specific code
+    expect(putResponseDetails.status, 'Status should be "403"').toBe(403);
+
+    // Flexible check for any success code (200-299)
+    expect(putResponseDetails.statusText, 'Status Text should be "Forbidden"').toBe('Forbidden');
+  });
+});
+
+/**
+ * ASSERTION SUMMARY REFERENCE
+ * ----------------------------------------------------------------------------------------------------------------------------------------------------
+ * | Assertion                | Best Used For                        | Comparison Type                                                                |
+ * |--------------------------|--------------------------------------|--------------------------------------------------------------------------------|
+ * | .toBe()                  | Status codes, booleans, exact strings| Identity/Strict (===) - Checks if they are the exact same instance in memory.  |
+ * | .toEqual()               | Full JSON objects or Arrays          | Deep Equality -  Recursively checks if all fields and values inside match.     |
+ * | .toMatchObject()         | Checking specific fields in a JSON   | Partial Match                                                                  |
+ * | .toBeOK()                | Quick 200-299 status check           | Range check                                                                    |
+ * | expect.objectContaining()| Partial matches inside Arrays/Objects| Asymmetric Matcher                                                             |
+ * ----------------------------------------------------------------------------------------------------------------------------------------------------
+ */

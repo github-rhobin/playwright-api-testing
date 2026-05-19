@@ -21,7 +21,7 @@ export class AuthClient {
 
     // Response Status Checker
     if (!response.ok()) {
-      throw new Error(`Create Token [POST] API failed. Status: ${response.status()} : ${response.statusText()}`);
+      throw new Error(`Create Token [POST] API failed.\nStatus: ${response.status()} ${response.statusText()}`);
     }
 
     // Read the body data once to check for API errors

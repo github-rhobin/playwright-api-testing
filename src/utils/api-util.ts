@@ -43,6 +43,17 @@ export async function formatApiRequest(template: string, values: any[]): Promise
  * @returns
  */
 export async function getResponseDetails<T>(method: string, response: APIResponse, duration: number) {
+  const rawText = await response.text();
+  let parsedBody: any;
+
+  try {
+    // Fast path: attempt to parse text directly into your expected JSON object/type
+    parsedBody = rawText ? (JSON.parse(rawText) as T) : null;
+  } catch {
+    // Fallback path: if it fails, it's plain text (like "Forbidden") or empty
+    parsedBody = rawText;
+  }
+
   return {
     url: response.url(),
     method: method,
@@ -51,7 +62,6 @@ export async function getResponseDetails<T>(method: string, response: APIRespons
     statusText: response.statusText(),
     isResponseSuccessful: response.ok(), // Extracts the boolean flag directly (true if status is 200-299)
     headers: response.headers(),
-    body: (await response.json()) as T,
-    // Enforce type safety on the response body using the BookingPayload interface + bookingid
+    body: parsedBody,
   };
 }
