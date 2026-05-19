@@ -1,4 +1,4 @@
 # playwright-api-testing
 
-- a playwright typescript api automation project using https://restful-booker.herokuapp.com api playground. 
+- a playwright api automation project for https://restful-booker.herokuapp.com 
 
