@@ -1,0 +1,25 @@
+{
+  "validBooking": {
+    "firstname": "John",
+    "lastname": "Doe",
+    "totalprice": 1000,
+    "depositpaid": true,
+    "bookingdates": {
+      "checkin": "2026-12-31",
+      "checkout": "2027-01-01"
+    },
+    "additionalneeds": "Playwright API Test"
+  },
+
+  "invalidBooking": {
+    "firstname": "Invalid",
+    "lastname": "Booking",
+    "totalprice": null,
+    "depositpaid": null,
+    "bookingdates": {
+      "checkin": "$%^&*",
+      "checkout": "#%$%#$"
+    },
+    "additionalneeds": null
+  }
+}

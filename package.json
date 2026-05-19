@@ -9,7 +9,11 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
     "@playwright/test": "^1.60.0",
-    "@types/node": "^25.9.0"
+    "@types/node": "^25.9.0",
+    "dotenv": "^17.4.2",
+    "typescript": "^6.0.3",
+    "zod": "^4.4.3"
   }
 }
