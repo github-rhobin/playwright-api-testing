@@ -30,10 +30,10 @@ test('[POST] Create Booking', async ({ request }, testInfo) => {
   // console.log(`STRINGIFIED RESPONSE OBJECT: ${stringifiedResponse}`);
 
   // Attach the stringified JSON to the current step in the report
-  await testInfo.attach('POST API RESPONSE', {
-    body: stringifiedResponse,
-    contentType: 'application/json',
-  });
+  // await testInfo.attach('POST API RESPONSE', {
+  //   body: stringifiedResponse,
+  //   contentType: 'application/json',
+  // });
 
   await test.step('Validation', async () => {
     // Strict check for a specific code

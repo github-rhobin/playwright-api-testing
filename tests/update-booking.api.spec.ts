@@ -26,10 +26,10 @@ test('[PUT] Update Booking Details - Valid Token', { tag: ['@positive'] }, async
   const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
 
   // Attach the stringified JSON to the current step in the report
-  await testInfo.attach('POST API RESPONSE', {
-    body: stringifyJson(postResponseDetails),
-    contentType: 'application/json',
-  });
+  // await testInfo.attach('POST API RESPONSE', {
+  //   body: stringifyJson(postResponseDetails),
+  //   contentType: 'application/json',
+  // });
 
   // Save the bookingid from the response
   const bookingId = postResponseDetails.body.bookingid;
@@ -47,10 +47,10 @@ test('[PUT] Update Booking Details - Valid Token', { tag: ['@positive'] }, async
   const putResponseDetails = await bookingClient.updateBookingApi<updateBookingResponse>(bookingId, putRequestPayload);
 
   // Attach the stringified JSON to the current step in the report
-  await testInfo.attach('PUT API RESPONSE', {
-    body: stringifyJson(putResponseDetails),
-    contentType: 'application/json',
-  });
+  // await testInfo.attach('PUT API RESPONSE', {
+  //   body: stringifyJson(putResponseDetails),
+  //   contentType: 'application/json',
+  // });
 
   await test.step('Validation', async () => {
     // Strict check for a specific code
@@ -93,10 +93,10 @@ test('[PUT] Update Booking Details - Invalid/No Token', { tag: ['@negative'] }, 
   const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
 
   // Attach the stringified JSON to the current step in the report
-  await testInfo.attach('POST API RESPONSE', {
-    body: stringifyJson(postResponseDetails),
-    contentType: 'application/json',
-  });
+  // await testInfo.attach('POST API RESPONSE', {
+  //   body: stringifyJson(postResponseDetails),
+  //   contentType: 'application/json',
+  // });
 
   // Save the bookingid from the response
   const bookingId = postResponseDetails.body.bookingid;
@@ -105,10 +105,10 @@ test('[PUT] Update Booking Details - Invalid/No Token', { tag: ['@negative'] }, 
   const putRequestPayload = await generateBookingApiPayload();
 
   // Attach the stringified JSON to the current step in the report
-  await testInfo.attach('PUT API REQUEST', {
-    body: stringifyJson(putRequestPayload),
-    contentType: 'application/json',
-  });
+  // await testInfo.attach('PUT API REQUEST', {
+  //   body: stringifyJson(putRequestPayload),
+  //   contentType: 'application/json',
+  // });
 
   //Call the client PUT method
   const putResponseDetails = await bookingClient.updateBookingApi<updateBookingResponse>(

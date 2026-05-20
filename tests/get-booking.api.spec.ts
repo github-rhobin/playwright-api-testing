@@ -24,10 +24,10 @@ test('[GET] Get Booking Details', async ({ request }, testInfo) => {
   const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(requestPayload);
 
   // Attach the stringified JSON to the current step in the report
-  await testInfo.attach('POST API RESPONSE', {
-    body: stringifyJson(postResponseDetails),
-    contentType: 'application/json',
-  });
+  // await testInfo.attach('POST API RESPONSE', {
+  //   body: stringifyJson(postResponseDetails),
+  //   contentType: 'application/json',
+  // });
 
   // Save the bookingid from the response
   const bookingId = postResponseDetails.body.bookingid;
@@ -36,10 +36,10 @@ test('[GET] Get Booking Details', async ({ request }, testInfo) => {
   const getResponseDetails = await bookingClient.getBookingApi<getBookingResponse>(bookingId);
 
   // Attach the stringified JSON to the current step in the report
-  await testInfo.attach('GET API RESPONSE', {
-    body: stringifyJson(getResponseDetails),
-    contentType: 'application/json',
-  });
+  // await testInfo.attach('GET API RESPONSE', {
+  //   body: stringifyJson(getResponseDetails),
+  //   contentType: 'application/json',
+  // });
 
   await test.step('Validation', async () => {
     // Strict check for a specific code

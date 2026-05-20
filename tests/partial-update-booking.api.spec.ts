@@ -29,10 +29,10 @@ test(
     const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
 
     // Attach the stringified JSON to the current step in the report
-    await testInfo.attach('POST API RESPONSE', {
-      body: stringifyJson(postResponseDetails),
-      contentType: 'application/json',
-    });
+    // await testInfo.attach('POST API RESPONSE', {
+    //   body: stringifyJson(postResponseDetails),
+    //   contentType: 'application/json',
+    // });
 
     // Save the bookingid from the response
     const bookingId = postResponseDetails.body.bookingid;
@@ -56,10 +56,10 @@ test(
     );
 
     // Attach the stringified JSON to the current step in the report
-    await testInfo.attach('PATCH API RESPONSE', {
-      body: stringifyJson(patchResponseDetails),
-      contentType: 'application/json',
-    });
+    // await testInfo.attach('PATCH API RESPONSE', {
+    //   body: stringifyJson(patchResponseDetails),
+    //   contentType: 'application/json',
+    // });
 
     await test.step('Validation', async () => {
       // Flexible check for any success code (200-299)
@@ -112,10 +112,10 @@ test(
     const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
 
     // Attach the stringified JSON to the current step in the report
-    await testInfo.attach('POST API RESPONSE', {
-      body: stringifyJson(postResponseDetails),
-      contentType: 'application/json',
-    });
+    // await testInfo.attach('POST API RESPONSE', {
+    //   body: stringifyJson(postResponseDetails),
+    //   contentType: 'application/json',
+    // });
 
     // Save the bookingid from the response
     const bookingId = postResponseDetails.body.bookingid;
