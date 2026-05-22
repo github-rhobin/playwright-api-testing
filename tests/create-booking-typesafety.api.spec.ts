@@ -25,16 +25,6 @@ test('[POST] Create Booking', async ({ request }, testInfo) => {
   // Stringify Response Details for reports
   const stringifiedResponse = stringifyJson(responseDetails);
 
-  // Print Response Body
-  // console.log("RAW RESPONSE OBJECT:", responseDetails);
-  // console.log(`STRINGIFIED RESPONSE OBJECT: ${stringifiedResponse}`);
-
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('POST API RESPONSE', {
-  //   body: stringifiedResponse,
-  //   contentType: 'application/json',
-  // });
-
   await test.step('Validation', async () => {
     // Strict check for a specific code
     expect(responseDetails.status, 'Status should be 200').toBe(200);

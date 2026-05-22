@@ -13,7 +13,7 @@ test('[PUT] Update Booking Details - Valid Token', { tag: ['@positive'] }, async
    * Since restful-booking heroku app auto clears bookings
    * we need to create booking first then vefiry the details.
    * We will reuse the POST request first then save the generated Booking ID
-   * Then run the PATCH request targetting the saved Booking ID
+   * Then run the PUT request targetting the saved Booking ID
    */
 
   //Instantiate the Client
@@ -24,12 +24,6 @@ test('[PUT] Update Booking Details - Valid Token', { tag: ['@positive'] }, async
 
   //Call the client POST method
   const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
-
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('POST API RESPONSE', {
-  //   body: stringifyJson(postResponseDetails),
-  //   contentType: 'application/json',
-  // });
 
   // Save the bookingid from the response
   const bookingId = postResponseDetails.body.bookingid;
@@ -43,21 +37,15 @@ test('[PUT] Update Booking Details - Valid Token', { tag: ['@positive'] }, async
     contentType: 'application/json',
   });
 
-  //Call the client PUT method
+  //Call the client PUT method passing the bookingId and putRequestPayload
   const putResponseDetails = await bookingClient.updateBookingApi<updateBookingResponse>(bookingId, putRequestPayload);
 
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('PUT API RESPONSE', {
-  //   body: stringifyJson(putResponseDetails),
-  //   contentType: 'application/json',
-  // });
-
   await test.step('Validation', async () => {
-    // Strict check for a specific code
-    expect(putResponseDetails.status, 'Status should be 200').toBe(200);
-
     // Flexible check for any success code (200-299)
     expect(putResponseDetails.isResponseSuccessful, 'Should be Success Status Code').toBe(true);
+
+    // Strict check for a specific code
+    expect(putResponseDetails.status, 'Status should be 200').toBe(200);
 
     // Header should have Content-Type = application/json
     expect(
@@ -80,7 +68,7 @@ test('[PUT] Update Booking Details - Invalid/No Token', { tag: ['@negative'] }, 
    * Since restful-booking heroku app auto clears bookings
    * we need to create booking first then vefiry the details.
    * We will reuse the POST request first then save the generated Booking ID
-   * Then run the PATCH request targetting the saved Booking ID
+   * Then run the PUT request targetting the saved Booking ID
    */
 
   //Instantiate the Client
@@ -92,25 +80,13 @@ test('[PUT] Update Booking Details - Invalid/No Token', { tag: ['@negative'] }, 
   //Call the client POST method
   const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
 
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('POST API RESPONSE', {
-  //   body: stringifyJson(postResponseDetails),
-  //   contentType: 'application/json',
-  // });
-
   // Save the bookingid from the response
   const bookingId = postResponseDetails.body.bookingid;
 
   //Generate the randomized update data (payload)
   const putRequestPayload = await generateBookingApiPayload();
 
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('PUT API REQUEST', {
-  //   body: stringifyJson(putRequestPayload),
-  //   contentType: 'application/json',
-  // });
-
-  //Call the client PUT method
+  //Call the client PUT method passing bookingId, putRequestPayload and empty authToken '' as negative test
   const putResponseDetails = await bookingClient.updateBookingApi<updateBookingResponse>(
     bookingId,
     putRequestPayload,
@@ -119,7 +95,7 @@ test('[PUT] Update Booking Details - Invalid/No Token', { tag: ['@negative'] }, 
 
   await test.step('Validation', async () => {
     // Flexible check for any success code (200-299)
-    expect(putResponseDetails.isResponseSuccessful, 'Should be a Failed Response').toBe(false);
+    expect(putResponseDetails.isResponseSuccessful, 'Should be a Failed Response').toBe(false); // negative test
 
     // Strict check for a specific code
     expect(putResponseDetails.status, 'Status should be "403"').toBe(403);

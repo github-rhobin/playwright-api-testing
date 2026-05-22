@@ -28,12 +28,6 @@ test(
     //Call the client POST method
     const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
 
-    // Attach the stringified JSON to the current step in the report
-    // await testInfo.attach('POST API RESPONSE', {
-    //   body: stringifyJson(postResponseDetails),
-    //   contentType: 'application/json',
-    // });
-
     // Save the bookingid from the response
     const bookingId = postResponseDetails.body.bookingid;
 
@@ -49,17 +43,11 @@ test(
       contentType: 'application/json',
     });
 
-    //Call the client PATCH method passing the "cleanPatchRequestPayload" (without any possible undefined properties)
+    //Call the client PATCH method passing the bookingId and "cleanPatchRequestPayload" (without any possible undefined properties)
     const patchResponseDetails = await bookingClient.partialUpdateBookingApi<partialUpdateBookingResponse>(
       bookingId,
       cleanPatchRequestPayload
     );
-
-    // Attach the stringified JSON to the current step in the report
-    // await testInfo.attach('PATCH API RESPONSE', {
-    //   body: stringifyJson(patchResponseDetails),
-    //   contentType: 'application/json',
-    // });
 
     await test.step('Validation', async () => {
       // Flexible check for any success code (200-299)
@@ -111,12 +99,6 @@ test(
     //Call the client POST method
     const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(postRequestPayload);
 
-    // Attach the stringified JSON to the current step in the report
-    // await testInfo.attach('POST API RESPONSE', {
-    //   body: stringifyJson(postResponseDetails),
-    //   contentType: 'application/json',
-    // });
-
     // Save the bookingid from the response
     const bookingId = postResponseDetails.body.bookingid;
 
@@ -132,7 +114,7 @@ test(
       contentType: 'application/json',
     });
 
-    //Call the client PATCH method passing the "cleanPatchRequestPayload" (without any possible undefined properties)
+    //Call the client PATCH method passing the bookingId, cleanPatchRequestPayload" (without any possible undefined properties) and empty authToken '' as negative test
     const patchResponseDetails = await bookingClient.partialUpdateBookingApi<partialUpdateBookingResponse>(
       bookingId,
       cleanPatchRequestPayload,
@@ -141,7 +123,7 @@ test(
 
     await test.step('Validation', async () => {
       // Flexible check for any success code (200-299)
-      expect(patchResponseDetails.isResponseSuccessful, 'Should be a Failed Response').toBe(false);
+      expect(patchResponseDetails.isResponseSuccessful, 'Should be a Failed Response').toBe(false); //negative test
 
       // Strict check for a specific code
       expect(patchResponseDetails.status, 'Status should be "403"').toBe(403);

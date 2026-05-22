@@ -6,7 +6,6 @@ import {
   getBookingIdsResponse,
   getBookingIdsResponseSchema,
 } from '../src/api/booking/booking-schema';
-import { stringifyJson } from '../src/utils/api-util';
 import { z } from 'zod';
 
 test('[GET] Get Booking Ids', async ({ request }, testInfo) => {
@@ -27,19 +26,13 @@ test('[GET] Get Booking Ids', async ({ request }, testInfo) => {
   //Call the client POST method
   const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(requestPayload);
 
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('POST API RESPONSE', {
-  //   body: stringifyJson(postResponseDetails),
-  //   contentType: 'application/json',
-  // });
-
   // Save the optional query parameters from the response
   const firstname = postResponseDetails.body.booking.firstname;
   const lastname = postResponseDetails.body.booking.lastname;
   const checkin = postResponseDetails.body.booking.bookingdates.checkin;
   const checkout = postResponseDetails.body.booking.bookingdates.checkout;
 
-  // Call the client GET method
+  // Call the client GET method passing firstname and lastname (checkin and checkout is a designed bug for the herokuapp)
   const getResponseDetails = await bookingClient.getBookingIdsApi<getBookingIdsResponse>(
     firstname,
     lastname
@@ -47,18 +40,12 @@ test('[GET] Get Booking Ids', async ({ request }, testInfo) => {
     //checkout,
   );
 
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('GET API RESPONSE', {
-  //   body: stringifyJson(getResponseDetails),
-  //   contentType: 'application/json',
-  // });
-
   await test.step('Validation', async () => {
-    // Strict check for a specific code
-    expect(getResponseDetails.status, 'Status should be 200').toBe(200);
-
     // Flexible check for any success code (200-299)
     expect(getResponseDetails.isResponseSuccessful, 'Should be Success Status Code').toBe(true);
+
+    // Strict check for a specific code
+    expect(getResponseDetails.status, 'Status should be 200').toBe(200);
 
     // Header should have Content-Type = application/json
     expect(

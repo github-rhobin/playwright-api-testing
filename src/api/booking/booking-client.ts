@@ -82,7 +82,9 @@ export class BookingClient {
     const response = await this.request.put(`/booking/${bookingId}`, {
       // Inject the authToken (Bearer/Cookie) in the request headers
       headers: {
-        // Authorization: `Bearer ${this.authToken}`,
+        // YWRtaW46cGFzc3dvcmQxMjM=] Basic authorization header to access the PUT endpoint, can be used as an alternative to the Cookie header
+        // Authorization: `Bearer YWRtaW46cGFzc3dvcmQxMjM=]`,
+
         // Dynamically injects the header if activeToken has a value
         ...(activeToken ? { Cookie: `token=${activeToken}` } : {}),
       },
@@ -102,7 +104,9 @@ export class BookingClient {
     const response = await this.request.patch(`/booking/${bookingId}`, {
       // Inject the authToken (Bearer/Cookie) in the request headers
       headers: {
-        // Authorization: `Bearer ${this.authToken}`,
+        // YWRtaW46cGFzc3dvcmQxMjM=] Basic authorization header to access the PATCH endpoint, can be used as an alternative to the Cookie header
+        // Authorization: `Bearer YWRtaW46cGFzc3dvcmQxMjM=]`,
+
         // Dynamically injects the header if activeToken has a value
         ...(activeToken ? { Cookie: `token=${activeToken}` } : {}),
       },
@@ -112,5 +116,26 @@ export class BookingClient {
     const duration = Date.now() - startTime; // Calculate duration in ms
 
     return getResponseDetails<T>('PATCH', response, duration);
+  }
+
+  async deleteBookingApi<T>(bookingId: number, overrideToken?: string) {
+    // Resolve which token to use (method parameter override > stored fixture token > undefined)
+    const activeToken = overrideToken !== undefined ? overrideToken : this.authToken;
+
+    const startTime = Date.now(); // Start timer
+    const response = await this.request.delete(`/booking/${bookingId}`, {
+      // Inject the authToken (Bearer/Cookie) in the request headers
+      headers: {
+        // YWRtaW46cGFzc3dvcmQxMjM=] Basic authorization header to access the PATCH endpoint, can be used as an alternative to the Cookie header
+        // Authorization: `Bearer YWRtaW46cGFzc3dvcmQxMjM=]`,
+
+        // Dynamically injects the header if activeToken has a value
+        ...(activeToken ? { Cookie: `token=${activeToken}` } : {}),
+      },
+      timeout: 2_000, // allotted response time 2s
+    });
+    const duration = Date.now() - startTime; // Calculate duration in ms
+
+    return getResponseDetails<T>('DELETE', response, duration);
   }
 }

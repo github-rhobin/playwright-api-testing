@@ -2,7 +2,6 @@ import { test, expect } from '../src/fixtures/api-fixture';
 import { generateBookingApiPayload } from '../src/api/booking/booking-factory';
 import { BookingClient } from '../src/api/booking/booking-client';
 import { createBookingResponse, getBookingResponse, getBookingResponseSchema } from '../src/api/booking/booking-schema';
-import { stringifyJson } from '../src/utils/api-util';
 import { z } from 'zod';
 
 test('[GET] Get Booking Details', async ({ request }, testInfo) => {
@@ -23,30 +22,18 @@ test('[GET] Get Booking Details', async ({ request }, testInfo) => {
   //Call the client POST method
   const postResponseDetails = await bookingClient.createBookingApi<createBookingResponse>(requestPayload);
 
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('POST API RESPONSE', {
-  //   body: stringifyJson(postResponseDetails),
-  //   contentType: 'application/json',
-  // });
-
   // Save the bookingid from the response
   const bookingId = postResponseDetails.body.bookingid;
 
-  // Call the client GET method
+  // Call the client GET method passing the bookingId
   const getResponseDetails = await bookingClient.getBookingApi<getBookingResponse>(bookingId);
 
-  // Attach the stringified JSON to the current step in the report
-  // await testInfo.attach('GET API RESPONSE', {
-  //   body: stringifyJson(getResponseDetails),
-  //   contentType: 'application/json',
-  // });
-
   await test.step('Validation', async () => {
-    // Strict check for a specific code
-    expect(getResponseDetails.status, 'Status should be 200').toBe(200);
-
     // Flexible check for any success code (200-299)
     expect(getResponseDetails.isResponseSuccessful, 'Should be Success Status Code').toBe(true);
+
+    // Strict check for a specific code
+    expect(getResponseDetails.status, 'Status should be 200').toBe(200);
 
     // Header should have Content-Type = application/json
     expect(
@@ -73,21 +60,7 @@ test('[GET] Get Booking Details', async ({ request }, testInfo) => {
     expect(result.success, `Schema Validation:\n${!result.success ? z.prettifyError(result.error) : ''}`).toBeTruthy();
 
     // Bulk Property Validation using .toMatchObject()
-    expect(getResponseDetails.body, 'Should match the following details').toMatchObject({
-      firstname: requestPayload.firstname,
-      lastname: requestPayload.lastname,
-      totalprice: requestPayload.totalprice,
-      depositpaid: requestPayload.depositpaid,
-
-      // Partial Contents Validation
-      // expect.arrayContaining([])
-      // expect.objectContaining({})
-      bookingdates: expect.objectContaining({
-        checkin: requestPayload.bookingdates.checkin,
-        checkout: requestPayload.bookingdates.checkout,
-      }),
-      additionalneeds: requestPayload.additionalneeds,
-    });
+    expect(getResponseDetails.body, 'Should match the following details').toMatchObject(requestPayload);
   });
 
   /**
