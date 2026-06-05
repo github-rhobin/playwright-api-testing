@@ -1,5 +1,4 @@
 import { defineConfig } from '@playwright/test';
-import os from 'os';
 import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -8,7 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  /* Global Setup Config */
+  /* Global Setup (Generate Auth Token) Config */
   //globalSetup: require.resolve('./src/api/global/global-setup'),
   /* Test Directory */
   testDir: './tests',
@@ -19,9 +18,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  // workers: process.env.CI ? 1 : undefined,
-  // Safely uses 50% capacity on CI (minimum 1 worker), and 100% full speed on local
-  workers: process.env.CI ? Math.max(1, Math.floor(os.cpus().length / 2)) : '100%',
+  workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html'], ['list']],
 

@@ -6,3 +6,13 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Environment Variables
+.env
+
+# Miscellaneous
+.vscode/
+.prettierrc
+
+# HAR Files
+hars/
