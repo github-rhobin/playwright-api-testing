@@ -46,16 +46,44 @@ A hands-on API automation tutorial using [Playwright Test](https://playwright.de
 ## Setup
 
 ```bash
-npm install
+npm install                          # Install Node dependencies
+npx playwright install chromium      # Download Chromium (needed for mocking tests)
 ```
+
+> **Note:** On Linux, if you need headed browser mode (e.g., local testing with `--headed`), append `--with-deps` to install required system libraries. CI and Windows users don't need it.
 
 ## Running Tests
 
 ```bash
-npx playwright test              # Run all tests
-npx playwright test --headed     # Run with browser UI (for mocking tests)
-npx playwright test --ui         # Playwright UI mode
+npx playwright test                        # Run all tests
+npx playwright test --project=api-tests    # Run API tests only
+npx playwright test --grep "Mocking"       # Run a specific group
 ```
+
+## CI/CD
+
+- **GitHub Actions** — `.github/workflows/test-workflow.yml` triggers on push/PR, installs dependencies, runs tests, publishes JUnit results, and uploads the Playwright report as an artifact.
+- **Jenkins (freestyle, Windows)** — Build step runs the following, with secrets managed via Jenkins credentials:
+  ```bat
+  :: 1. Delete any old local file to guarantee we use the fresh Jenkins secret
+  if exist .env del .env
+
+  :: 2. Copy the secret file to a local .env file in the workspace
+  copy "%SECRETS_ENV%" .env
+
+  :: 3. Install project dependencies quickly (skips audits and funding logs)
+  call npm ci --no-audit --no-fund
+
+  :: 4. Install ONLY Chromium to save data size and disk space
+  call npx playwright install chromium
+
+  :: 5. Run the Playwright automation tests
+  call npx playwright test
+
+  :: 6. Clean up the credentials so they aren't left exposed on the hard drive
+  if exist .env del .env
+  ```
+  Post-build actions: Publish HTML Report, Publish Allure Report, Publish JUnit Test Results.<br></br>Secrets stored in Jenkins: `SECRETS_ENV` (`.env` with credentials) and GitHub PAT.
 
 ## Configuration
 
