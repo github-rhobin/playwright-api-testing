@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS_LTS_24.16.0'
-        allure 'Allure_CMD_2.40.0'
+        nodejs 'NodeJS_LTS_24.16.0'   // Must match the NodeJS installation name configured in Jenkins global tools
+        allure 'Allure_CMD_2.40.0'    // Must match the Allure installation name configured in Jenkins global tools
     }
 
     stages {
         stage('Prepare .env') {
             environment {
-                SECRETS_ENV = credentials('playwright-api-testing-secrets')
+                SECRETS_ENV = credentials('playwright-api-testing-secrets')  // Must match the secret file credential ID in Jenkins
             }
             steps {
                 bat '''

@@ -1,6 +1,6 @@
 # Playwright API Testing
 
-A hands-on API automation tutorial using [Playwright Test](https://playwright.dev) against the [RESTful-Booker](https://restful-booker.herokuapp.com) API.
+API test automation suite using [Playwright Test](https://playwright.dev) against the [RESTful-Booker](https://restful-booker.herokuapp.com) API.
 
 ## What's Covered
 
@@ -18,14 +18,16 @@ A hands-on API automation tutorial using [Playwright Test](https://playwright.de
 
 ### Key Libraries
 
-| Tool | Role in API Testing |
-|---|---|
-| **[Faker](https://fakerjs.dev)** | Generates realistic, randomized payloads so tests aren't brittle (no hardcoded values). Each test run gets fresh data — great for catching server-side state issues. |
-| **[Zod](https://zod.dev)** | Validates API responses at runtime with declarative schemas. Catches contract breaks early (missing fields, wrong types) and gives clear error messages, all without leaving TypeScript. |
+| Tool                             | Role in API Testing                                                                                                                                                                      |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[Faker](https://fakerjs.dev)** | Generates realistic, randomized payloads so tests aren't brittle (no hardcoded values). Each test run gets fresh data — great for catching server-side state issues.                     |
+| **[Zod](https://zod.dev)**       | Validates API responses at runtime with declarative schemas. Catches contract breaks early (missing fields, wrong types) and gives clear error messages, all without leaving TypeScript. |
 
 ## Project Structure
 
 ```
+├── .github/workflows/     — GitHub Actions CI workflow
+├── .vscode/settings.json  — Project editor settings (formatting)
 ├── src/
 │   ├── api/
 │   │   ├── auth/          — auth-client.ts, auth-schema.ts
@@ -35,7 +37,12 @@ A hands-on API automation tutorial using [Playwright Test](https://playwright.de
 ├── test-data/             — Static JSON test data
 ├── tests/                 — All test specs (*.spec.ts, *.api.spec.ts)
 ├── hars/                  — Recorded HAR files for mocking
-└── playwright.config.ts   — Playwright configuration
+├── .prettierrc            — Prettier formatting rules
+├── Jenkinsfile            — Jenkins Pipeline definition
+├── playwright.config.ts   — Playwright configuration
+├── test-results/          — with JUnit XML test reports (excluded from version control)
+├── playwright-report/     — HTML test report (excluded from version control)
+└── allure-results/        — Allure test results (excluded from version control)
 ```
 
 ## Prerequisites
@@ -62,8 +69,10 @@ npx playwright test --grep "Mocking"       # Run a specific group
 
 ## CI/CD
 
-- **GitHub Actions** — `.github/workflows/test-workflow.yml` triggers on push/PR, installs dependencies, runs tests, publishes JUnit results, and uploads the Playwright report as an artifact.
-- **Jenkins (freestyle, Windows)** — Build step runs the following, with secrets managed via Jenkins credentials:
+- **GitHub Actions** — `.github/workflows/test-workflow.yml` triggers on push, pull request, or manual dispatch. Installs dependencies, runs tests, publishes JUnit results, and uploads the Playwright report as an artifact.
+- **Jenkins (Pipeline)** — `Jenkinsfile` at project root defines the same build pipeline declaratively. Jenkins global tools (NodeJS, Allure) and a secret file credential (`playwright-api-testing-secrets`) must be configured to match.
+- **Jenkins (freestyle, Windows)** — Alternative setup using a freestyle project with the following build step and secrets managed via Jenkins credentials:
+
   ```bat
   :: 1. Delete any old local file to guarantee we use the fresh Jenkins secret
   if exist .env del .env
@@ -83,7 +92,9 @@ npx playwright test --grep "Mocking"       # Run a specific group
   :: 6. Clean up the credentials so they aren't left exposed on the hard drive
   if exist .env del .env
   ```
-  Post-build actions: Publish HTML Report, Publish Allure Report, Publish JUnit Test Results.<br></br>Secrets stored in Jenkins: `SECRETS_ENV` (`.env` with credentials) and GitHub PAT.
+
+  Post-build actions: HTML, Allure, and JUnit reports published after each run.  
+  Jenkins secrets: `SECRETS_ENV` (`.env` credentials) and GitHub PAT.
 
 ## Configuration
 
@@ -94,5 +105,4 @@ AUTH_USERNAME=admin
 AUTH_PASSWORD=password123
 ```
 
-Defaults: `admin` / `password123` (matching RESTful-Booker defaults). 
-
+Defaults: `admin` / `password123` (matching RESTful-Booker defaults).
