@@ -8,7 +8,6 @@ pipeline {
 
     environment {
         SECRETS_ENV = credentials('SECRETS_ENV')
-        GITHUB_PAT  = credentials('GITHUB_PAT')
     }
 
     stages {
@@ -42,6 +41,8 @@ pipeline {
 
     post {
         always {
+            bat 'if exist .env del .env'
+
             junit 'test-results/junit-results.xml'
 
             publishHTML(target: [
@@ -60,10 +61,6 @@ pipeline {
                 reportBuildPolicy: 'ALWAYS',
                 results: [[path: 'allure-results']]
             ])
-        }
-
-        cleanup {
-            bat 'if exist .env del .env'
         }
     }
 }
