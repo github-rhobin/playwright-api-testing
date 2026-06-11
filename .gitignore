@@ -13,9 +13,5 @@ allure-results/
 # Environment Variables
 .env
 
-# Miscellaneous
-.vscode/
-.prettierrc
-
 # HAR Files
 hars/

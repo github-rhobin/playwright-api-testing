@@ -1,0 +1,42 @@
+name: Playwright Test
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm' # Speeds up your runs by caching node_modules
+
+      - name: Install dependencies
+        run: npm ci # More reliable than 'npm install' for CI/CD
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          CI: 'true'
+
+      - name: Publish JUnit Test Results
+        if: success() || failure()
+        uses: dorny/test-reporter@v1
+        with:
+          name: JUnit Test Results
+          path: test-results/junit-results.xml
+          reporter: java-junit
+
+      - name: Upload Full Playwright Report (For Devs/Debugging)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-full
+          path: playwright-report/ # Uploads the whole folder (traces/videos included)
+          retention-days: 30
+
+
