@@ -6,12 +6,11 @@ pipeline {
         allure 'Allure_CMD_2.40.0'
     }
 
-    environment {
-        SECRETS_ENV = credentials('SECRETS_ENV')
-    }
-
     stages {
         stage('Prepare .env') {
+            environment {
+                SECRETS_ENV = credentials('playwright-api-testing-secrets')
+            }
             steps {
                 bat '''
                     if exist .env del .env
