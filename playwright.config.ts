@@ -1,11 +1,9 @@
 import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
+
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
   /* Global Setup (Generate Auth Token) Config */
   //globalSetup: require.resolve('./src/api/global/global-setup'),
@@ -25,7 +23,7 @@ export default defineConfig({
       'html',
       {
         outputFolder: 'playwright-report',
-        // If CI exists, pass 'never'. Otherwise, pass 'always' (or 'on-failure')
+        // If CI exists, pass 'never'. Otherwise, pass 'on-failure'
         open: process.env.CI ? 'never' : 'on-failure',
       },
     ],
